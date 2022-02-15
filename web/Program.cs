@@ -1,15 +1,24 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.EntityFrameworkCore;
+using domusvita.azurewebsites.net.Data;
+using Models;
 
-// Add services to the container.
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<MvcMovieContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MvcMovieContext")));
+
 builder.Services.AddControllersWithViews();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
-// Configure the HTTP request pipeline.
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    IServiceProvider services = scope.ServiceProvider;
+    SeedData.Initialize(services);
+}
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
