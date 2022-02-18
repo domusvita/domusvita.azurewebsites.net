@@ -16,3 +16,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+#np-parks-details img.np-details {
+    max-width: 500px;
+    border: solid 1px #000;
+}
+
+#np-parks-details dt {
+    text-align: right;
+}
+
+#np-park-list ul {
+    list-style: none;
+}

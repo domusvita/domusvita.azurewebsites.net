@@ -1,0 +1,83 @@
+﻿@using domusvita.azurewebsites.net.Models.NationalParks
+@model domusvita.azurewebsites.net.Models.NationalParks.NationalParksApiResponse<Parks>
+
+@{
+    ViewData["Title"] = $"National Parks - Park Details for {Model!.Data[0].FullName}";
+    Park park = Model.Data[0];
+}
+
+<div id="np-parks-details">
+    
+    <div id="loader" data-request-url="@Url.Action("Index", "NationalParks")"></div>
+
+    <h4>@Model.Data[0].FullName</h4>
+    <hr/>
+    <img class="np-details" src="@park.Images[0].Url" alt="@park.Images[0].AltText"/><br/>
+    <label class="small">@park.Images[0].Caption</label>
+    <hr/>
+    <dl class="row">
+
+        @{
+            foreach (Address address in park.Addresses)
+            {
+                <dt class="col-sm-2">
+                    @address.Type Address
+                </dt>
+                <dd class="col-sm-10">
+                    @address.Line1
+                    @if (!string.IsNullOrEmpty(address.Line2))
+                    {
+                        <br/>@address.Line2
+                    }
+                    @if (!string.IsNullOrEmpty(address.Line3))
+                    {
+                        <br/>@address.Line3
+                    }
+                    <br/>@address.City, @address.StateCode @address.PostalCode
+                </dd>
+            }
+        }
+
+        <dt class="col-sm-2">
+            Park Description
+        </dt>
+        <dd class="col-sm-10">
+            @park.Description
+        </dd>
+        <dt class="col-sm-2">
+            Contact Information
+        </dt>
+        <dd class="col-sm-10">
+
+            @foreach (EmailAddress emailAddress in park.Contacts.EmailAddresses.Where(emailAddress => !string.IsNullOrEmpty(emailAddress.Address)))
+            {
+                <span class="fst-italic">Email:</span>
+                <a href="mailto:@emailAddress.Address;" title="send email to @emailAddress.Address">@emailAddress.Address</a><br/>
+            }
+
+            @foreach (PhoneNumber phoneNumber in park.Contacts.PhoneNumbers.Where(phoneNumber => !string.IsNullOrEmpty(phoneNumber.Number)))
+            {
+                <span class="fst-italic">@phoneNumber.Type: </span>
+                @phoneNumber.Number<br/>
+            }
+
+        </dd>
+        <dt class="col-sm-2">
+            Directions
+        </dt>
+        <dd class="col-sm-10">
+            @park.DirectionsInfo
+        </dd>
+        <dt class="col-sm-2">
+            Weather
+        </dt>
+        <dd class="col-sm-10">
+            @park.WeatherInfo
+        </dd>
+    </dl>
+
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

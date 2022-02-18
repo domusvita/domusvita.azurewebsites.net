@@ -1,0 +1,45 @@
+﻿@using domusvita.azurewebsites.net.Models.NationalParks
+@model domusvita.azurewebsites.net.Models.NationalParks.NationalParksApiResponse<Parks>
+
+@{
+    ViewData["Title"] = "National Parks - Park List";
+}
+
+<div id="np-park-list">
+    <h1>Park List</h1>
+
+    <ul>
+        @{
+            int totalParks = Convert.ToInt32(Model.Total);
+            int pageCount = totalParks / 50 + 1;
+            foreach (var park in Model.Data)
+            {
+                <li><a asp-controller="NationalParks" asp-route-id="@park.ParkCode" asp-action="Details">@park.FullName</a></li>
+            }
+        }
+    </ul>
+
+    Go to page 
+    <select id="pager">
+        @{
+            for (int pageItem = 1; pageItem <= pageCount; pageItem++)
+            {
+                <option value="@(pageItem - 1)">@pageItem</option>
+            }
+        }
+    </select>
+
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#pager').val('@Model.Start');
+
+            $('#pager').on('change', function() {
+                window.location.href = '@Url.Action("Index", "NationalParks")?pageNumber=' + this.value;
+            });
+        });
+    </script>
+}
+   
